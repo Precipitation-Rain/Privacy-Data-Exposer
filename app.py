@@ -58,14 +58,14 @@ RGBA0 = "rgba(0,0,0,0)"
 PLOTLY_BASE = dict(
     paper_bgcolor = RGBA0,
     plot_bgcolor  = RGBA0,
-    font          = dict(color=T["chalk3"], family="'DM Mono', monospace", size=10),
+    font          = dict(color=T["chalk2"], family="'DM Mono', monospace", size=11),
     margin        = dict(l=8, r=8, t=38, b=8),
     hoverlabel    = dict(bgcolor=T["ink4"], bordercolor=T["line2"],
-                         font_color=T["chalk"], font_size=11,
+                         font_color=T["chalk"], font_size=12,
                          font_family="'DM Sans', sans-serif"),
-    legend        = dict(bgcolor=RGBA0, bordercolor=T["line"], font_size=10),
+    legend        = dict(bgcolor=RGBA0, bordercolor=T["line"], font_size=11, font_color=T["chalk2"]),
     colorway      = [T["sky"], T["lime"], T["gold"], T["amber"], T["red"], T["rose"]],
-    title_font    = dict(color=T["chalk2"], size=11, family="'DM Mono', monospace"),
+    title_font    = dict(color=T["chalk"], size=12, family="'DM Mono', monospace"),
 )
 
 st.markdown(f"""
@@ -77,7 +77,7 @@ st.markdown(f"""
 html, body, [class*="css"], .stApp {{
   font-family: 'DM Sans', system-ui, sans-serif !important;
   background: {T['ink0']} !important;
-  color: {T['chalk3']} !important;
+  color: {T['chalk2']} !important;
 }}
 
 [data-testid="stAppViewContainer"] {{
@@ -87,7 +87,6 @@ html, body, [class*="css"], .stApp {{
     radial-gradient(ellipse 40% 30% at 100% 100%, {T['gold']}06 0%, transparent 50%);
 }}
 
-/* ── HEADER ── */
 [data-testid="stHeader"] {{
   background: transparent !important;
   border-bottom: none !important;
@@ -98,7 +97,6 @@ html, body, [class*="css"], .stApp {{
 [data-testid="stMainMenu"]     {{ display: none !important; }}
 [data-testid="stStatusWidget"] {{ display: none !important; }}
 
-/* ── CRITICAL FIX: collapse button always visible, not just on hover ── */
 [data-testid="stSidebarCollapseButton"] {{
   visibility: visible !important;
   opacity: 1 !important;
@@ -111,7 +109,6 @@ html, body, [class*="css"], .stApp {{
   max-width: 1600px !important;
 }}
 
-/* ── SIDEBAR ── only background and border, NO width/min-width ── */
 [data-testid="stSidebar"] {{
   background: {T['ink1']} !important;
   border-right: 1px solid {T['line']} !important;
@@ -133,7 +130,7 @@ h1 {{
 h2, h3 {{
   font-family: 'DM Sans', sans-serif !important;
   font-weight: 500 !important;
-  color: {T['chalk2']} !important;
+  color: {T['chalk']} !important;
   letter-spacing: -0.02em !important;
 }}
 
@@ -142,7 +139,7 @@ h2, h3 {{
   background: {T['ink3']} !important;
   border: 1px solid {T['line2']} !important;
   border-radius: 6px !important;
-  color: {T['chalk2']} !important;
+  color: {T['chalk']} !important;
   font-family: 'DM Sans', sans-serif !important;
   font-size: 13px !important;
 }}
@@ -150,6 +147,13 @@ h2, h3 {{
 [data-testid="stTextInput"] input:focus {{
   border-color: {T['sky']}80 !important;
   box-shadow: 0 0 0 2px {T['sky']}18 !important;
+}}
+
+/* Selectbox dropdown options */
+[data-testid="stSelectbox"] ul li,
+[data-testid="stSelectbox"] [role="option"] {{
+  color: {T['chalk']} !important;
+  background: {T['ink3']} !important;
 }}
 
 [data-testid="stFileUploader"] section {{
@@ -171,14 +175,15 @@ h2, h3 {{
   font-weight: 500 !important;
 }}
 [data-testid="stMetricLabel"] {{
-  color: {T['chalk4']} !important;
-  font-size: 9px !important;
+  color: {T['chalk2']} !important;
+  font-size: 10px !important;
   text-transform: uppercase !important;
   letter-spacing: .14em !important;
   font-weight: 500 !important;
 }}
 [data-testid="stMetricDelta"] {{ display: none; }}
 
+/* Radio nav buttons in sidebar — BRIGHT */
 [data-testid="stRadio"] > div {{
   display: flex !important;
   flex-direction: column !important;
@@ -186,8 +191,8 @@ h2, h3 {{
 }}
 [data-testid="stRadio"] label {{
   font-family: 'DM Sans', sans-serif !important;
-  font-size: 13px !important;
-  color: {T['chalk3']} !important;
+  font-size: 14px !important;
+  color: {T['chalk2']} !important;
   padding: 10px 14px !important;
   border-radius: 8px !important;
   border: 1px solid {T['line']} !important;
@@ -198,7 +203,7 @@ h2, h3 {{
 [data-testid="stRadio"] label:hover {{
   background: {T['ink4']} !important;
   border-color: {T['line2']} !important;
-  color: {T['chalk2']} !important;
+  color: {T['chalk']} !important;
 }}
 [data-testid="stRadio"] label:has(input:checked) {{
   background: linear-gradient(135deg, {T['ink4']}, {T['ink5']}) !important;
@@ -207,6 +212,7 @@ h2, h3 {{
   box-shadow: 0 0 12px {T['gold']}15, inset 0 1px 0 {T['gold']}10 !important;
 }}
 
+/* Tabs — BRIGHT */
 .stTabs [data-baseweb="tab-list"] {{
   background: transparent !important;
   border-bottom: 1px solid {T['line']} !important;
@@ -214,9 +220,9 @@ h2, h3 {{
 }}
 .stTabs [data-baseweb="tab"] {{
   background: transparent !important;
-  color: {T['chalk4']} !important;
+  color: {T['chalk3']} !important;
   font-weight: 400 !important;
-  font-size: 11.5px !important;
+  font-size: 12px !important;
   letter-spacing: .08em !important;
   text-transform: uppercase !important;
   border-radius: 0 !important;
@@ -229,17 +235,17 @@ h2, h3 {{
   border-bottom: 2px solid {T['gold']} !important;
 }}
 .stTabs [data-baseweb="tab"]:hover:not([aria-selected="true"]) {{
-  color: {T['chalk3']} !important;
+  color: {T['chalk2']} !important;
   background: {T['ink3']}80 !important;
 }}
 
 .stButton > button {{
   background: {T['ink4']} !important;
-  color: {T['chalk2']} !important;
+  color: {T['chalk']} !important;
   border: 1px solid {T['line2']} !important;
   border-radius: 6px !important;
   font-weight: 500 !important;
-  font-size: 11.5px !important;
+  font-size: 12px !important;
   padding: 8px 18px !important;
   letter-spacing: .06em !important;
   text-transform: uppercase !important;
@@ -248,7 +254,7 @@ h2, h3 {{
 }}
 .stButton > button:hover {{
   background: {T['ink5']} !important;
-  border-color: {T['chalk4']} !important;
+  border-color: {T['chalk3']} !important;
   color: {T['chalk']} !important;
 }}
 
@@ -257,47 +263,76 @@ h2, h3 {{
 .stInfo    {{ background: {T['sky']}0c !important; border: 1px solid {T['sky']}30 !important; border-radius: 6px !important; }}
 .stError   {{ background: {T['red']}0c !important; border: 1px solid {T['red']}30 !important; border-radius: 6px !important; }}
 
+/* Alert/info text bright */
+.stSuccess p, .stWarning p, .stInfo p, .stError p {{
+  color: {T['chalk']} !important;
+  font-size: 13px !important;
+}}
+
 [data-testid="stExpander"] {{
   background: {T['ink2']} !important;
   border: 1px solid {T['line']} !important;
   border-radius: 8px !important;
 }}
 [data-testid="stExpander"] summary {{
-  color: {T['chalk3']} !important;
-  font-size: 12px !important;
+  color: {T['chalk2']} !important;
+  font-size: 13px !important;
   font-family: 'DM Mono', monospace !important;
   letter-spacing: .06em !important;
   text-transform: uppercase !important;
 }}
+[data-testid="stExpander"] summary:hover {{
+  color: {T['chalk']} !important;
+}}
 
+/* Chat messages — BRIGHT */
 [data-testid="stChatMessage"] {{
   background: {T['ink2']} !important;
   border: 1px solid {T['line']} !important;
   border-radius: 8px !important;
   margin-bottom: 8px !important;
 }}
+[data-testid="stChatMessage"] p,
+[data-testid="stChatMessage"] li,
+[data-testid="stChatMessage"] span {{
+  color: {T['chalk']} !important;
+  font-size: 13px !important;
+  line-height: 1.7 !important;
+}}
+[data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] p {{
+  color: {T['chalk']} !important;
+}}
 
+/* Dataframe — BRIGHT */
 [data-testid="stDataFrame"] th {{
   background: {T['ink4']} !important;
-  color: {T['chalk4']} !important;
-  font-size: 9px !important;
+  color: {T['chalk2']} !important;
+  font-size: 10px !important;
   text-transform: uppercase !important;
   letter-spacing: .12em !important;
   font-family: 'DM Mono', monospace !important;
   border-bottom: 1px solid {T['line2']} !important;
 }}
 [data-testid="stDataFrame"] td {{
-  color: {T['chalk3']} !important;
+  color: {T['chalk2']} !important;
   font-size: 12px !important;
   font-family: 'DM Mono', monospace !important;
 }}
 
 hr {{ border-color: {T['line']} !important; margin: 1.2rem 0 !important; }}
+
+/* Caption / small text — BRIGHT */
 [data-testid="stCaptionContainer"] p {{
-  color: {T['chalk5']} !important;
-  font-size: 10.5px !important;
+  color: {T['chalk3']} !important;
+  font-size: 11px !important;
   font-family: 'DM Mono', monospace !important;
 }}
+
+/* General p tags */
+p {{
+  color: {T['chalk2']} !important;
+}}
+
 ::-webkit-scrollbar {{ width: 3px; height: 3px; }}
 ::-webkit-scrollbar-track {{ background: {T['ink1']}; }}
 ::-webkit-scrollbar-thumb {{ background: {T['line2']}; border-radius: 3px; }}
@@ -310,21 +345,21 @@ hr {{ border-color: {T['line']} !important; margin: 1.2rem 0 !important; }}
   margin: 2.4rem 0;
 }}
 
+/* Eyebrow labels — BRIGHT */
 .eyebrow {{
   font-family: 'DM Mono', monospace;
   font-size: 11px;
   letter-spacing: .18em;
   text-transform: uppercase;
-  color: {T['chalk3']};
+  color: {T['chalk2']};
 }}
 .sidebar-eyebrow {{
   font-family: 'DM Sans', sans-serif;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: .22em;
   text-transform: uppercase;
   color: {T['chalk2']};
-  opacity: 0.55;
   margin-bottom: 8px;
   padding-left: 2px;
 }}
@@ -355,12 +390,11 @@ hr {{ border-color: {T['line']} !important; margin: 1.2rem 0 !important; }}
 }}
 .pl-section-sub {{
   font-family: 'DM Sans', sans-serif; font-size: 13px;
-  color: {T['chalk2']}; margin-top: 3px; opacity: 1;
+  color: {T['chalk2']}; margin-top: 3px;
 }}
 </style>
 """, unsafe_allow_html=True)
 
-# ── JS FIX: force pointer-events on header so sidebar button always works ──
 st.components.v1.html("""
 <script>
 (function() {
@@ -449,20 +483,20 @@ def signal_bar(label, value, explanation):
     return f"""
     <div style="padding:12px 0;border-bottom:1px solid {T['line']}22">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
-        <span style="font-size:13px;color:{T['chalk2']};font-family:'DM Sans',sans-serif;font-weight:500">{label}</span>
+        <span style="font-size:13px;color:{T['chalk']};font-family:'DM Sans',sans-serif;font-weight:500">{label}</span>
         <span style="font-family:'DM Mono',monospace;font-size:11px;color:{col};font-weight:500">{pct}%</span>
       </div>
       <div style="background:{T['ink4']};border-radius:3px;height:3px;overflow:hidden">
         <div style="width:{pct}%;background:linear-gradient(90deg,{col}99,{col});height:3px;border-radius:3px"></div>
       </div>
-      <div style="font-size:12px;color:{T['chalk3']};margin-top:5px;font-family:'DM Sans',sans-serif;line-height:1.5">{explanation}</div>
+      <div style="font-size:12px;color:{T['chalk2']};margin-top:5px;font-family:'DM Sans',sans-serif;line-height:1.5">{explanation}</div>
     </div>"""
 
 def stat_pill(label, val, color=None):
-    c = color or T["chalk3"]
+    c = color or T["chalk2"]
     return f"""<div style="display:inline-block;margin:4px 6px 4px 0;padding:6px 12px;
       background:{T['ink3']};border:1px solid {T['line2']};border-radius:4px">
-      <div style="font-family:'DM Mono',monospace;font-size:9px;color:{T['chalk5']};text-transform:uppercase;
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:{T['chalk3']};text-transform:uppercase;
            letter-spacing:.12em;margin-bottom:3px">{label}</div>
       <div style="font-family:'DM Mono',monospace;font-size:13px;color:{c};font-weight:500">{val}</div>
     </div>"""
@@ -597,7 +631,7 @@ with st.sidebar:
     st.markdown(f"""
     <div style="padding:28px 0 8px">
       <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.22em;
-           text-transform:uppercase;color:{T['chalk3']};margin-bottom:10px">Privacy Intelligence</div>
+           text-transform:uppercase;color:{T['chalk2']};margin-bottom:10px">Privacy Intelligence</div>
       <div style="font-family:'Fraunces',serif;font-size:28px;font-weight:300;
            color:{T['chalk']};letter-spacing:-.03em;line-height:1">
         Privacy<span style="color:{T['gold']}">Lens</span>
@@ -654,7 +688,7 @@ with st.sidebar:
             <div style="width:6px;height:6px;border-radius:50%;background:{T['lime']};box-shadow:0 0 6px {T['lime']}"></div>
             <span style="font-family:'DM Mono',monospace;font-size:10px;color:{T['lime']};letter-spacing:.14em;text-transform:uppercase">Active Dataset</span>
           </div>
-          <div style="font-family:'DM Mono',monospace;font-size:12px;color:{T['chalk3']}">{len(df_raw):,} sites · {n_cat} categories</div>
+          <div style="font-family:'DM Mono',monospace;font-size:12px;color:{T['chalk2']}">{len(df_raw):,} sites · {n_cat} categories</div>
         </div>""", unsafe_allow_html=True)
 
     st.markdown('<div class="section-sep"></div>', unsafe_allow_html=True)
@@ -681,12 +715,12 @@ if df_raw is None:
     st.markdown(f"""
     <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;
          padding:100px 0;text-align:center">
-      <div style="font-family:'DM Mono',monospace;font-size:11px;color:{T['chalk4']};
+      <div style="font-family:'DM Mono',monospace;font-size:11px;color:{T['chalk3']};
            letter-spacing:.25em;text-transform:uppercase;margin-bottom:20px">Privacy Intelligence Platform</div>
       <h1 style="font-family:'Fraunces',serif !important;font-size:52px;font-weight:300;
            letter-spacing:-.04em;color:{T['chalk']};margin:0 0 20px;line-height:1">
         Privacy<span style="color:{T['gold']}">Lens</span></h1>
-      <p style="font-size:14px;color:{T['chalk4']};max-width:420px;line-height:1.8;font-family:'DM Sans',sans-serif">
+      <p style="font-size:14px;color:{T['chalk2']};max-width:420px;line-height:1.8;font-family:'DM Sans',sans-serif">
         Upload <code style="font-family:'DM Mono',monospace;color:{T['sky']};background:{T['ink3']};
         padding:2px 8px;border-radius:3px">sites.csv</code> via the sidebar to start.</p>
     </div>""", unsafe_allow_html=True)
@@ -704,7 +738,7 @@ if st.session_state.page == "Score Analyzer":
       <div class="eyebrow" style="margin-bottom:8px">🔍 Score Analyzer</div>
       <h1 style="font-family:'Fraunces',serif !important;font-size:34px;font-weight:300;
            color:{T['chalk']} !important;letter-spacing:-.04em;margin:0 0 6px">Privacy Risk Analysis</h1>
-      <p style="color:{T['chalk4']};font-size:13px;font-family:'DM Sans',sans-serif;margin:0">
+      <p style="color:{T['chalk2']};font-size:13px;font-family:'DM Sans',sans-serif;margin:0">
         See exactly what each website tracks, how they do it, and what they do with your data</p>
     </div>""", unsafe_allow_html=True)
 
@@ -760,6 +794,7 @@ if st.session_state.page == "Score Analyzer":
     pop_str    = f"{pop_val:.5f}" if pop_val > 0 else "—"
     percentile = int((df["privacy_score"] < score).mean() * 100)
 
+    # Hero card — stat pill labels bright, values bright
     st.markdown(f"""
     <div style="padding:24px 28px;background:{T['ink2']};border:1px solid {T['line']};
          border-top:3px solid {color};border-radius:10px;margin:0 0 20px;
@@ -780,7 +815,7 @@ if st.session_state.page == "Score Analyzer":
         <div class="eyebrow" style="margin-bottom:6px">Risk Score</div>
         <div style="font-family:'DM Mono',monospace;font-size:56px;font-weight:300;
              color:{color};line-height:1;letter-spacing:-.04em">{score:.0f}
-          <span style="font-size:18px;color:{T['chalk5']};font-weight:400">/100</span>
+          <span style="font-size:18px;color:{T['chalk3']};font-weight:400">/100</span>
         </div>
       </div>
     </div>""", unsafe_allow_html=True)
@@ -794,7 +829,7 @@ if st.session_state.page == "Score Analyzer":
             number={"font":{"size":40,"color":color,"family":"DM Mono"}},
             domain={"x":[0,1],"y":[0,1]},
             gauge={
-                "axis":{"range":[0,100],"tickwidth":0,"tickfont":{"color":T["chalk5"],"size":8}},
+                "axis":{"range":[0,100],"tickwidth":0,"tickfont":{"color":T["chalk2"],"size":9}},
                 "bar":{"color":color,"thickness":0.16},
                 "bgcolor":T["ink3"],"borderwidth":0,
                 "steps":[
@@ -825,10 +860,10 @@ if st.session_state.page == "Score Analyzer":
                       <div class="eyebrow" style="margin-bottom:7px">vs. Category Average</div>
                       <div style="display:flex;align-items:baseline;gap:8px">
                         <span style="font-family:'DM Mono',monospace;font-size:22px;color:{T['chalk']};font-weight:400">{cm:.0f}</span>
-                        <span style="font-family:'DM Mono',monospace;font-size:12px;color:{T['chalk5']}">avg</span>
+                        <span style="font-family:'DM Mono',monospace;font-size:12px;color:{T['chalk3']}">avg</span>
                         <span style="font-family:'DM Mono',monospace;font-size:13px;color:{dcol};margin-left:8px">{dstr} pts</span>
                       </div>
-                      <div style="font-size:11px;color:{T['chalk5']};margin-top:4px;font-family:'DM Sans',sans-serif">in {cvs}</div>
+                      <div style="font-size:11px;color:{T['chalk3']};margin-top:4px;font-family:'DM Sans',sans-serif">in {cvs}</div>
                     </div>""", unsafe_allow_html=True)
 
         eyebrow("Signal Snapshot")
@@ -875,15 +910,15 @@ if st.session_state.page == "Score Analyzer":
                 for num,title,desc,cl in items:
                     html += f"""<div style="display:flex;gap:16px;padding:13px 0;
                       border-bottom:1px solid {T['line']}22;align-items:flex-start">
-                      <div style="font-family:'DM Mono',monospace;font-size:9px;color:{T['chalk5']};
+                      <div style="font-family:'DM Mono',monospace;font-size:9px;color:{T['chalk3']};
                            padding-top:3px;flex-shrink:0;letter-spacing:.08em">{num}</div>
                       <div>
-                        <div style="font-size:13px;font-weight:600;color:{T['chalk2']};
+                        <div style="font-size:13px;font-weight:600;color:{T['chalk']};
                              font-family:'DM Sans',sans-serif;margin-bottom:4px;
                              display:flex;align-items:center;gap:8px">{title}
                           <span style="display:inline-block;width:5px;height:5px;
                                border-radius:50%;background:{cl};flex-shrink:0"></span></div>
-                        <div style="font-size:12px;color:{T['chalk3']};font-family:'DM Sans',sans-serif;
+                        <div style="font-size:12px;color:{T['chalk2']};font-family:'DM Sans',sans-serif;
                              line-height:1.6">{desc}</div>
                       </div></div>"""
                 st.markdown(html, unsafe_allow_html=True)
@@ -934,12 +969,12 @@ if st.session_state.page == "Score Analyzer":
                   border:1px solid {T['line']};border-left:2px solid {cl};
                   border-radius:0 6px 6px 0;margin-bottom:10px">
                   <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
-                    <div style="font-size:13px;font-weight:600;color:{T['chalk2']};font-family:'DM Sans',sans-serif">{title}</div>
+                    <div style="font-size:13px;font-weight:600;color:{T['chalk']};font-family:'DM Sans',sans-serif">{title}</div>
                     <span style="font-family:'DM Mono',monospace;font-size:8.5px;color:{cl};
                          letter-spacing:.12em;padding:3px 8px;border:1px solid {cl}30;
                          border-radius:2px;flex-shrink:0;margin-left:12px">{sev}</span>
                   </div>
-                  <div style="font-size:12px;color:{T['chalk3']};font-family:'DM Sans',sans-serif;line-height:1.65">{desc}</div>
+                  <div style="font-size:12px;color:{T['chalk2']};font-family:'DM Sans',sans-serif;line-height:1.65">{desc}</div>
                 </div>"""
             st.markdown(html, unsafe_allow_html=True)
 
@@ -966,10 +1001,11 @@ if st.session_state.page == "Score Analyzer":
                 x=contrib_vals, y=[sig_labels.get(s,s) for s,_ in sorted_c], orientation="h",
                 marker=dict(color=bar_colors,line=dict(color=RGBA0),opacity=0.85),
                 text=[f"+{c:.1f}" for c in contrib_vals], textposition="outside",
-                textfont=dict(color=T["chalk4"],size=10,family="DM Mono")))
+                textfont=dict(color=T["chalk2"],size=10,family="DM Mono")))
             fig_bar.update_layout(**{**PLOTLY_BASE,"height":280,
-                "xaxis":dict(title="Points contributed",gridcolor=T["line"],zeroline=False,tickfont=dict(size=9)),
-                "yaxis":dict(autorange="reversed",gridcolor=RGBA0,tickfont=dict(size=10)),
+                "xaxis":dict(title="Points contributed",gridcolor=T["line"],zeroline=False,
+                             tickfont=dict(size=10,color=T["chalk2"])),
+                "yaxis":dict(autorange="reversed",gridcolor=RGBA0,tickfont=dict(size=10,color=T["chalk2"])),
                 "margin":dict(l=8,r=60,t=10,b=26)})
             st.plotly_chart(fig_bar, use_container_width=True, config={"displayModeBar":False})
 
@@ -978,7 +1014,7 @@ if st.session_state.page == "Score Analyzer":
             html = f"""<div style="background:{T['ink2']};border:1px solid {T['line']};
               border-radius:6px;overflow:hidden;font-family:'DM Mono',monospace">
               <div style="display:grid;grid-template-columns:2fr .6fr .6fr .6fr;padding:10px 16px;
-                   border-bottom:1px solid {T['line2']};font-size:9.5px;color:{T['chalk3']};
+                   border-bottom:1px solid {T['line2']};font-size:9.5px;color:{T['chalk2']};
                    text-transform:uppercase;letter-spacing:.14em;background:{T['ink3']}">
                 <span>Signal</span><span>Value</span><span>Weight</span><span>Points</span></div>"""
             for i,(sig,contrib) in enumerate(sorted_c):
@@ -987,13 +1023,13 @@ if st.session_state.page == "Score Analyzer":
                 rb  = T["ink3"]+"60" if i%2==0 else RGBA0
                 html += f"""<div style="display:grid;grid-template-columns:2fr .6fr .6fr .6fr;
                   padding:9px 16px;border-bottom:1px solid {T['line']}18;background:{rb}">
-                  <span style="font-size:12.5px;color:{T['chalk2']}">{sig_labels.get(sig,sig)}</span>
-                  <span style="font-size:11px;color:{T['chalk3']}">{val:.3f}</span>
-                  <span style="font-size:11px;color:{T['chalk4']}">×{w:.2f}</span>
+                  <span style="font-size:12.5px;color:{T['chalk']}">{sig_labels.get(sig,sig)}</span>
+                  <span style="font-size:11px;color:{T['chalk2']}">{val:.3f}</span>
+                  <span style="font-size:11px;color:{T['chalk3']}">×{w:.2f}</span>
                   <span style="font-size:12px;font-weight:500;color:{cl}">+{contrib:.1f}</span></div>"""
             html += f"""<div style="display:grid;grid-template-columns:2fr .6fr .6fr .6fr;
               padding:12px 16px;border-top:1px solid {T['line2']};background:{T['ink4']}">
-              <span style="font-size:12px;font-weight:500;color:{T['chalk2']};letter-spacing:.04em">TOTAL</span>
+              <span style="font-size:12px;font-weight:500;color:{T['chalk']};letter-spacing:.04em">TOTAL</span>
               <span></span><span></span>
               <span style="font-size:14px;font-weight:500;color:{color}">{total_contrib:.0f}</span>
             </div></div>"""
@@ -1065,7 +1101,7 @@ Reply in {chosen_lang}. Be concise. Use bullets for lists. Plain language only."
     if not api_key:
         st.markdown(f"""<div style="padding:20px 24px;background:{T['ink3']};
           border:1px solid {T['line2']};border-radius:6px;text-align:center">
-          <div style="font-family:'DM Mono',monospace;font-size:11px;color:{T['chalk3']};line-height:2">
+          <div style="font-family:'DM Mono',monospace;font-size:12px;color:{T['chalk2']};line-height:2">
             Add <code style="color:{T['sky']};background:{T['ink4']};padding:2px 8px;border-radius:3px">GROQ_API_KEY=gsk_...</code>
             to your <code style="color:{T['sky']};background:{T['ink4']};padding:2px 8px;border-radius:3px">.env</code>
             to enable the AI assistant.
@@ -1156,7 +1192,7 @@ else:
       <div class="eyebrow" style="margin-bottom:8px">📊 Analytics Dashboard</div>
       <h1 style="font-family:'Fraunces',serif !important;font-size:34px;font-weight:300;
            color:{T['chalk']} !important;letter-spacing:-.04em;margin:0 0 6px">Analytics Dashboard</h1>
-      <p style="color:{T['chalk4']};font-size:13px;font-family:'DM Sans',sans-serif;margin:0">
+      <p style="color:{T['chalk2']};font-size:13px;font-family:'DM Sans',sans-serif;margin:0">
         {len(dfw):,} websites · {n_cat} categories · full visual intelligence</p>
     </div>""", unsafe_allow_html=True)
 
@@ -1175,11 +1211,11 @@ else:
         cat_avg = dfw.groupby("category")["privacy_score"].mean().sort_values(ascending=False)
 
     def sec(text, sub=""):
-        s2 = f'<div style="font-size:12px;color:{T["chalk5"]};margin-top:3px;font-family:\'DM Sans\',sans-serif">{sub}</div>' if sub else ""
+        s2 = f'<div style="font-size:12px;color:{T["chalk3"]};margin-top:3px;font-family:\'DM Sans\',sans-serif">{sub}</div>' if sub else ""
         st.markdown(f"""<div style="margin:1.8rem 0 1.2rem;display:flex;align-items:baseline;gap:10px">
-          <span style="font-family:'DM Mono',monospace;font-size:9px;color:{T['chalk5']};letter-spacing:.2em">◈</span>
+          <span style="font-family:'DM Mono',monospace;font-size:9px;color:{T['chalk3']};letter-spacing:.2em">◈</span>
           <div><span style="font-family:'Fraunces',serif;font-size:18px;font-weight:300;
-               color:{T['chalk2']};letter-spacing:-.02em">{text}</span>{s2}</div>
+               color:{T['chalk']};letter-spacing:-.02em">{text}</span>{s2}</div>
           <div style="flex:1;height:1px;background:{T['line']};margin-left:8px;margin-bottom:2px"></div>
         </div>""", unsafe_allow_html=True)
 
@@ -1200,6 +1236,8 @@ else:
         fig = px.histogram(dfw, x="privacy_score", nbins=30, title="Score Distribution",
                            color_discrete_sequence=[T["sky"]])
         fig.update_layout(**PLOTLY_BASE, height=260)
+        fig.update_layout(xaxis=dict(tickfont=dict(color=T["chalk2"],size=10),gridcolor=T["line"]),
+                          yaxis=dict(tickfont=dict(color=T["chalk2"],size=10),gridcolor=T["line"]))
         fig.update_traces(marker_line_color=T["ink0"], marker_line_width=0.3, marker_opacity=0.8)
         st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
         hd = dfw["privacy_score"].describe().reset_index(); hd.columns=["Statistic","Value"]
@@ -1210,10 +1248,10 @@ else:
             labels=tc.index.tolist(), values=tc.values.tolist(),
             marker_colors=[TIER_COLORS[t] for t in tc.index],
             hole=0.65, textinfo="label+percent",
-            textfont_size=9, textfont_color=T["chalk3"]))
-        fig.update_layout(**{**PLOTLY_BASE,"title":{"text":"Risk Tiers","font":{"size":11}},"height":260,"showlegend":False,
+            textfont_size=10, textfont_color=T["chalk2"]))
+        fig.update_layout(**{**PLOTLY_BASE,"title":{"text":"Risk Tiers","font":{"size":12,"color":T["chalk"]}},"height":260,"showlegend":False,
             "annotations":[dict(text=f"{len(dfw):,}",font_size=14,showarrow=False,
-                               font_color=T["chalk3"],font_family="DM Mono")]})
+                               font_color=T["chalk2"],font_family="DM Mono")]})
         st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
         td = tc.reset_index(); td.columns=["Tier","Count"]
         view_data_expander("Risk Tiers", td, "risk_tiers")
@@ -1224,8 +1262,9 @@ else:
             if len(sub):
                 fig.add_trace(go.Box(y=sub, name=t, marker_color=TIER_COLORS[t],
                     line_color=TIER_COLORS[t], fillcolor=hex_rgba(TIER_COLORS[t], 0.08), line_width=1.2))
-        fig.update_layout(**{**PLOTLY_BASE,"title":{"text":"Score by Tier","font":{"size":11}},"height":260,"showlegend":False,
-            "xaxis":dict(gridcolor=T["line"],tickfont_size=9),"yaxis":dict(gridcolor=T["line"])})
+        fig.update_layout(**{**PLOTLY_BASE,"title":{"text":"Score by Tier","font":{"size":12,"color":T["chalk"]}},"height":260,"showlegend":False,
+            "xaxis":dict(gridcolor=T["line"],tickfont=dict(size=10,color=T["chalk2"])),
+            "yaxis":dict(gridcolor=T["line"],tickfont=dict(size=10,color=T["chalk2"]))})
         st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
         view_data_expander("Score by Tier", dfw.groupby("tier")["privacy_score"].describe().round(2), "score_by_tier")
 
@@ -1239,9 +1278,10 @@ else:
             fig = go.Figure(go.Bar(x=cat_avg.values, y=cat_avg.index, orientation="h",
                 marker_color=cc, marker_line_color=T["ink0"], marker_line_width=0.3, marker_opacity=0.85,
                 text=[f"{v:.1f}" for v in cat_avg.values], textposition="outside",
-                textfont=dict(color=T["chalk4"],size=9,family="DM Mono")))
-            fig.update_layout(**{**PLOTLY_BASE,"title":{"text":"Avg Risk by Category","font":{"size":11}},"height":320,
-                "xaxis":dict(gridcolor=T["line"]),"yaxis":dict(autorange="reversed",gridcolor=RGBA0)})
+                textfont=dict(color=T["chalk2"],size=10,family="DM Mono")))
+            fig.update_layout(**{**PLOTLY_BASE,"title":{"text":"Avg Risk by Category","font":{"size":12,"color":T["chalk"]}},"height":320,
+                "xaxis":dict(gridcolor=T["line"],tickfont=dict(color=T["chalk2"],size=10)),
+                "yaxis":dict(autorange="reversed",gridcolor=RGBA0,tickfont=dict(color=T["chalk2"],size=10))})
             st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
             cad = cat_avg.reset_index(); cad.columns=["Category","Avg Risk Score"]
             view_data_expander("Avg Risk by Category", cad, "avg_risk_cat")
@@ -1250,7 +1290,8 @@ else:
                 color="category",
                 color_discrete_sequence=[T["sky"],T["lime"],T["gold"],T["amber"],T["red"],T["rose"],T["chalk4"],"#34d399","#fb7185","#38bdf8"])
             fig.update_layout(**{**PLOTLY_BASE,"height":320,"showlegend":False,
-                "xaxis":dict(tickangle=-30,gridcolor=T["line"],tickfont_size=9),"yaxis":dict(gridcolor=T["line"])})
+                "xaxis":dict(tickangle=-30,gridcolor=T["line"],tickfont=dict(size=10,color=T["chalk2"])),
+                "yaxis":dict(gridcolor=T["line"],tickfont=dict(size=10,color=T["chalk2"]))})
             st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
             view_data_expander("Score by Category", dfw.groupby("category")["privacy_score"].describe().round(2), "score_dist_cat")
 
@@ -1261,9 +1302,10 @@ else:
             fig  = go.Figure(go.Bar(x=ccnt.index.tolist(), y=ccnt.values.tolist(),
                 marker_color=pal[:len(ccnt)], marker_opacity=0.85,
                 text=ccnt.values.tolist(), textposition="outside",
-                textfont=dict(color=T["chalk4"],size=9)))
-            fig.update_layout(**{**PLOTLY_BASE,"title":{"text":"Sites per Category","font":{"size":11}},"height":270,
-                "xaxis":dict(tickangle=-30,gridcolor=RGBA0,tickfont_size=9),"yaxis":dict(gridcolor=T["line"])})
+                textfont=dict(color=T["chalk2"],size=10)))
+            fig.update_layout(**{**PLOTLY_BASE,"title":{"text":"Sites per Category","font":{"size":12,"color":T["chalk"]}},"height":270,
+                "xaxis":dict(tickangle=-30,gridcolor=RGBA0,tickfont=dict(size=10,color=T["chalk2"])),
+                "yaxis":dict(gridcolor=T["line"],tickfont=dict(size=10,color=T["chalk2"]))})
             st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
             ccd = ccnt.reset_index(); ccd.columns=["Category","Site Count"]
             view_data_expander("Sites per Category", ccd, "sites_per_cat")
@@ -1281,10 +1323,11 @@ else:
                     fillcolor=hex_rgba(c,0.08), line=dict(color=c,width=1.5)))
                 rrows.append({"Category":cat,**{s:round(v,3) for s,v in zip(radsig,vals)}})
             fig.update_layout(**{**PLOTLY_BASE,
-                "title":{"text":"Signal Radar — Top 5 Riskiest Categories","font":{"size":11}},"height":270,
+                "title":{"text":"Signal Radar — Top 5 Riskiest Categories","font":{"size":12,"color":T["chalk"]}},"height":270,
                 "polar":dict(bgcolor=RGBA0,
-                    radialaxis=dict(visible=True,range=[0,1],gridcolor=T["line"],tickfont=dict(size=7,color=T["chalk5"])),
-                    angularaxis=dict(gridcolor=T["line"],tickfont=dict(size=9,color=T["chalk4"])))})
+                    radialaxis=dict(visible=True,range=[0,1],gridcolor=T["line"],tickfont=dict(size=8,color=T["chalk2"])),
+                    angularaxis=dict(gridcolor=T["line"],tickfont=dict(size=10,color=T["chalk2"]))),
+                "legend":dict(bgcolor=RGBA0,font=dict(color=T["chalk2"],size=11))})
             st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
             view_data_expander("Signal Radar Data", pd.DataFrame(rrows), "radar_data")
 
@@ -1296,9 +1339,11 @@ else:
         labs = [SIGNAL_LABELS.get(c,c) for c in corr_cols]
         fig  = go.Figure(go.Heatmap(z=cm.values, x=labs, y=labs,
             colorscale=[[0,hex_rgba(T["lime"],0.6)],[0.5,hex_rgba(T["amber"],0.5)],[1,hex_rgba(T["red"],0.7)]],
-            zmin=-1, zmax=1, text=cm.values.round(2), texttemplate="%{text}", textfont_size=9))
-        fig.update_layout(**{**PLOTLY_BASE,"title":{"text":"Signal Correlation Matrix","font":{"size":11}},"height":420,
-            "xaxis":dict(tickangle=-40,tickfont_size=8),"yaxis":dict(tickfont_size=8,autorange="reversed"),
+            zmin=-1, zmax=1, text=cm.values.round(2), texttemplate="%{text}", textfont_size=10,
+            textfont_color=T["chalk2"]))
+        fig.update_layout(**{**PLOTLY_BASE,"title":{"text":"Signal Correlation Matrix","font":{"size":12,"color":T["chalk"]}},"height":420,
+            "xaxis":dict(tickangle=-40,tickfont=dict(size=9,color=T["chalk2"])),
+            "yaxis":dict(tickfont=dict(size=9,color=T["chalk2"]),autorange="reversed"),
             "margin":dict(l=100,r=10,t=38,b=90)})
         st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
         cd = cm.copy(); cd.index=labs; cd.columns=labs
@@ -1315,7 +1360,8 @@ else:
         if ck in dfw.columns:
             fig = px.histogram(dfw, x=ck, nbins=25, title=title, color_discrete_sequence=[clr])
             fig.update_layout(**{**PLOTLY_BASE,"height":230,
-                "xaxis":dict(gridcolor=T["line"]),"yaxis":dict(gridcolor=T["line"])})
+                "xaxis":dict(gridcolor=T["line"],tickfont=dict(color=T["chalk2"],size=10)),
+                "yaxis":dict(gridcolor=T["line"],tickfont=dict(color=T["chalk2"],size=10))})
             fig.update_traces(marker_opacity=0.8)
             with rc_cols[i%3]:
                 st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
@@ -1333,8 +1379,9 @@ else:
                 title="Script vs XHR (coloured by risk)", opacity=0.5,
                 hover_data={"site":True,"privacy_score":True})
             fig.update_layout(**{**PLOTLY_BASE,"height":290,
-                "xaxis":dict(gridcolor=T["line"]),"yaxis":dict(gridcolor=T["line"]),
-                "coloraxis_colorbar":dict(title="Score",tickfont_color=T["chalk4"])})
+                "xaxis":dict(gridcolor=T["line"],tickfont=dict(color=T["chalk2"],size=10)),
+                "yaxis":dict(gridcolor=T["line"],tickfont=dict(color=T["chalk2"],size=10)),
+                "coloraxis_colorbar":dict(title="Score",tickfont=dict(color=T["chalk2"]))})
             fig.update_traces(marker_size=3.5)
             st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
             view_data_expander("Script vs XHR", samp[["site","script","xhr","privacy_score"]].round(3), "script_xhr")
@@ -1346,7 +1393,8 @@ else:
                 color="category" if "category" in samp.columns else None,
                 title="Trackers vs Companies", opacity=0.5, hover_data={"site":True})
             fig.update_layout(**{**PLOTLY_BASE,"height":290,
-                "xaxis":dict(gridcolor=T["line"]),"yaxis":dict(gridcolor=T["line"])})
+                "xaxis":dict(gridcolor=T["line"],tickfont=dict(color=T["chalk2"],size=10)),
+                "yaxis":dict(gridcolor=T["line"],tickfont=dict(color=T["chalk2"],size=10))})
             fig.update_traces(marker_size=3.5)
             st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
             view_data_expander("Trackers vs Companies", samp[["site","trackers","companies"]].round(2), "track_comp")
@@ -1363,8 +1411,8 @@ else:
                     log_x=True, title="Popularity vs Privacy Score", opacity=0.55,
                     hover_data={"site":True})
                 fig.update_layout(**{**PLOTLY_BASE,"height":270,
-                    "xaxis":dict(gridcolor=T["line"],title="Popularity (log)"),
-                    "yaxis":dict(gridcolor=T["line"],title="Risk Score")})
+                    "xaxis":dict(gridcolor=T["line"],title="Popularity (log)",tickfont=dict(color=T["chalk2"],size=10)),
+                    "yaxis":dict(gridcolor=T["line"],title="Risk Score",tickfont=dict(color=T["chalk2"],size=10))})
                 fig.update_traces(marker_size=3.5)
                 st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
                 view_data_expander("Popularity vs Risk", samp[["site","popularity","privacy_score"]].round(4), "pop_risk")
@@ -1377,7 +1425,8 @@ else:
                     color_continuous_scale=[[0,T["lime"]],[0.5,T["amber"]],[1,T["red"]]],
                     title="Total vs Tracking Requests", opacity=0.5, hover_data={"site":True})
                 fig.update_layout(**{**PLOTLY_BASE,"height":270,
-                    "xaxis":dict(gridcolor=T["line"]),"yaxis":dict(gridcolor=T["line"])})
+                    "xaxis":dict(gridcolor=T["line"],tickfont=dict(color=T["chalk2"],size=10)),
+                    "yaxis":dict(gridcolor=T["line"],tickfont=dict(color=T["chalk2"],size=10))})
                 fig.update_traces(marker_size=3.5)
                 st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
                 view_data_expander("Total vs Tracking Requests",
@@ -1390,7 +1439,8 @@ else:
             fig = px.histogram(dfw, x="trackers", nbins=30, title="Trackers per Site",
                                color_discrete_sequence=[T["sky"]])
             fig.update_layout(**{**PLOTLY_BASE,"height":230,
-                "xaxis":dict(gridcolor=T["line"]),"yaxis":dict(gridcolor=T["line"])})
+                "xaxis":dict(gridcolor=T["line"],tickfont=dict(color=T["chalk2"],size=10)),
+                "yaxis":dict(gridcolor=T["line"],tickfont=dict(color=T["chalk2"],size=10))})
             fig.update_traces(marker_opacity=0.8)
             st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
             view_data_expander("Trackers per Site",
@@ -1400,7 +1450,8 @@ else:
             fig = px.histogram(dfw, x="companies", nbins=30, title="Companies per Site",
                                color_discrete_sequence=[T["lime"]])
             fig.update_layout(**{**PLOTLY_BASE,"height":230,
-                "xaxis":dict(gridcolor=T["line"]),"yaxis":dict(gridcolor=T["line"])})
+                "xaxis":dict(gridcolor=T["line"],tickfont=dict(color=T["chalk2"],size=10)),
+                "yaxis":dict(gridcolor=T["line"],tickfont=dict(color=T["chalk2"],size=10))})
             fig.update_traces(marker_opacity=0.8)
             st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
             view_data_expander("Companies per Site",
@@ -1411,9 +1462,10 @@ else:
             fig = go.Figure(go.Bar(x=ct.index.tolist(), y=ct.values.tolist(),
                 marker_color=T["sky"], marker_opacity=0.85,
                 text=ct.values.round(1).tolist(), textposition="outside",
-                textfont=dict(color=T["chalk4"],size=9)))
-            fig.update_layout(**{**PLOTLY_BASE,"title":{"text":"Avg Trackers by Category","font":{"size":11}},"height":230,
-                "xaxis":dict(tickangle=-30,gridcolor=RGBA0,tickfont_size=9),"yaxis":dict(gridcolor=T["line"])})
+                textfont=dict(color=T["chalk2"],size=10)))
+            fig.update_layout(**{**PLOTLY_BASE,"title":{"text":"Avg Trackers by Category","font":{"size":12,"color":T["chalk"]}},"height":230,
+                "xaxis":dict(tickangle=-30,gridcolor=RGBA0,tickfont=dict(size=10,color=T["chalk2"])),
+                "yaxis":dict(gridcolor=T["line"],tickfont=dict(size=10,color=T["chalk2"]))})
             st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
             ctd = ct.reset_index(); ctd.columns=["Category","Avg Trackers"]
             view_data_expander("Avg Trackers by Category", ctd, "avg_trackers_cat")
@@ -1428,11 +1480,13 @@ else:
                 x=[SIGNAL_LABELS.get(c,c) for c in sch], y=hdf.index.tolist(),
                 colorscale=[[0,hex_rgba(T["lime"],0.7)],[0.4,hex_rgba(T["amber"],0.6)],
                             [0.7,hex_rgba(T["red"],0.7)],[1,hex_rgba(T["rose"],0.8)]],
-                text=hdf.values.round(2), texttemplate="%{text}", textfont_size=9,
-                colorbar=dict(title="Avg",tickfont_color=T["chalk4"])))
+                text=hdf.values.round(2), texttemplate="%{text}", textfont_size=10,
+                textfont_color=T["chalk"],
+                colorbar=dict(title="Avg",tickfont=dict(color=T["chalk2"]))))
             fig.update_layout(**{**PLOTLY_BASE,
-                "title":{"text":"Avg Signal Intensity — Category × Technique","font":{"size":11}},"height":340,
-                "xaxis":dict(tickangle=-30,tickfont_size=9),"yaxis":dict(tickfont_size=9),
+                "title":{"text":"Avg Signal Intensity — Category × Technique","font":{"size":12,"color":T["chalk"]}},"height":340,
+                "xaxis":dict(tickangle=-30,tickfont=dict(size=10,color=T["chalk2"])),
+                "yaxis":dict(tickfont=dict(size=10,color=T["chalk2"])),
                 "margin":dict(l=110,r=70,t=38,b=90)})
             st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
             view_data_expander("Category × Signal Data", hdf.reset_index(), "cat_signal_heat")
@@ -1446,11 +1500,11 @@ else:
             x=top20["privacy_score"].tolist(), y=top20["site"].tolist(), orientation="h",
             marker_color=[tier_clr(v) for v in top20["privacy_score"]], marker_opacity=0.85,
             text=top20["privacy_score"].round(1).tolist(), textposition="outside",
-            textfont=dict(color=T["chalk4"],size=9,family="DM Mono"),
+            textfont=dict(color=T["chalk2"],size=10,family="DM Mono"),
             hovertemplate="<b>%{y}</b><br>Score: %{x:.1f}<extra></extra>"))
-        fig.update_layout(**{**PLOTLY_BASE,"title":{"text":"Top 20 Highest Risk Sites","font":{"size":11}},"height":490,
-            "xaxis":dict(range=[0,108],gridcolor=T["line"]),
-            "yaxis":dict(autorange="reversed",tickfont_size=9,gridcolor=RGBA0)})
+        fig.update_layout(**{**PLOTLY_BASE,"title":{"text":"Top 20 Highest Risk Sites","font":{"size":12,"color":T["chalk"]}},"height":490,
+            "xaxis":dict(range=[0,108],gridcolor=T["line"],tickfont=dict(color=T["chalk2"],size=10)),
+            "yaxis":dict(autorange="reversed",tickfont=dict(size=10,color=T["chalk2"]),gridcolor=RGBA0)})
         st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
         view_data_expander("Top 20 Highest Risk", top20.round(2), "top20_risk")
     with rg2:
@@ -1459,10 +1513,10 @@ else:
             x=bot20["privacy_score"].tolist(), y=bot20["site"].tolist(), orientation="h",
             marker_color=T["lime"], marker_opacity=0.85,
             text=bot20["privacy_score"].round(1).tolist(), textposition="outside",
-            textfont=dict(color=T["chalk4"],size=9,family="DM Mono")))
-        fig.update_layout(**{**PLOTLY_BASE,"title":{"text":"Top 20 Most Private Sites","font":{"size":11}},"height":490,
-            "xaxis":dict(range=[0,30],gridcolor=T["line"]),
-            "yaxis":dict(autorange="reversed",tickfont_size=9,gridcolor=RGBA0)})
+            textfont=dict(color=T["chalk2"],size=10,family="DM Mono")))
+        fig.update_layout(**{**PLOTLY_BASE,"title":{"text":"Top 20 Most Private Sites","font":{"size":12,"color":T["chalk"]}},"height":490,
+            "xaxis":dict(range=[0,30],gridcolor=T["line"],tickfont=dict(color=T["chalk2"],size=10)),
+            "yaxis":dict(autorange="reversed",tickfont=dict(size=10,color=T["chalk2"]),gridcolor=RGBA0)})
         st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
         view_data_expander("Top 20 Most Private", bot20.round(2), "top20_private")
 
@@ -1475,7 +1529,8 @@ else:
                 fig = px.histogram(pd3, x="track_ratio", nbins=30, title="Tracking Request Ratio",
                                    color_discrete_sequence=[T["amber"]])
                 fig.update_layout(**{**PLOTLY_BASE,"height":240,
-                    "xaxis":dict(tickformat=".0%",gridcolor=T["line"]),"yaxis":dict(gridcolor=T["line"])})
+                    "xaxis":dict(tickformat=".0%",gridcolor=T["line"],tickfont=dict(color=T["chalk2"],size=10)),
+                    "yaxis":dict(gridcolor=T["line"],tickfont=dict(color=T["chalk2"],size=10))})
                 fig.update_traces(marker_opacity=0.8)
                 st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
                 view_data_expander("Tracking Request Ratio", pd3["track_ratio"].describe().reset_index(), "track_ratio")
@@ -1486,7 +1541,8 @@ else:
                 fig = px.histogram(pd4, x="hosts", nbins=30, title="Distinct Hosts per Page",
                                    color_discrete_sequence=[T["sky"]])
                 fig.update_layout(**{**PLOTLY_BASE,"height":240,
-                    "xaxis":dict(gridcolor=T["line"]),"yaxis":dict(gridcolor=T["line"])})
+                    "xaxis":dict(gridcolor=T["line"],tickfont=dict(color=T["chalk2"],size=10)),
+                    "yaxis":dict(gridcolor=T["line"],tickfont=dict(color=T["chalk2"],size=10))})
                 fig.update_traces(marker_opacity=0.8)
                 st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
                 view_data_expander("Distinct Hosts", pd4["hosts"].describe().reset_index(), "hosts_hist")
@@ -1496,9 +1552,10 @@ else:
             fig = go.Figure(go.Bar(x=cr2.values.tolist(), y=cr2.index.tolist(), orientation="h",
                 marker_color=T["red"], marker_opacity=0.85,
                 text=cr2.values.round(1).tolist(), textposition="outside",
-                textfont=dict(color=T["chalk4"],size=9)))
-            fig.update_layout(**{**PLOTLY_BASE,"title":{"text":"Avg Tracking Requests by Category","font":{"size":11}},"height":240,
-                "xaxis":dict(gridcolor=T["line"]),"yaxis":dict(autorange="reversed",gridcolor=RGBA0)})
+                textfont=dict(color=T["chalk2"],size=10)))
+            fig.update_layout(**{**PLOTLY_BASE,"title":{"text":"Avg Tracking Requests by Category","font":{"size":12,"color":T["chalk"]}},"height":240,
+                "xaxis":dict(gridcolor=T["line"],tickfont=dict(color=T["chalk2"],size=10)),
+                "yaxis":dict(autorange="reversed",gridcolor=RGBA0,tickfont=dict(color=T["chalk2"],size=10))})
             st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
             crd = cr2.reset_index(); crd.columns=["Category","Avg Tracking Requests"]
             view_data_expander("Avg Tracking Requests", crd, "avg_req_cat")
@@ -1510,7 +1567,8 @@ else:
             fig = px.histogram(dfw, x="image", nbins=25, title="Tracking Pixels",
                                color_discrete_sequence=[T["rose"]])
             fig.update_layout(**{**PLOTLY_BASE,"height":230,
-                "xaxis":dict(gridcolor=T["line"]),"yaxis":dict(gridcolor=T["line"])})
+                "xaxis":dict(gridcolor=T["line"],tickfont=dict(color=T["chalk2"],size=10)),
+                "yaxis":dict(gridcolor=T["line"],tickfont=dict(color=T["chalk2"],size=10))})
             fig.update_traces(marker_opacity=0.8)
             st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
             view_data_expander("Tracking Pixels", dfw["image"].describe().reset_index(), "pixels_data")
@@ -1519,7 +1577,8 @@ else:
             fig = px.histogram(dfw, x="bad_qs", nbins=25, title="URL Fingerprinting",
                                color_discrete_sequence=[T["gold"]])
             fig.update_layout(**{**PLOTLY_BASE,"height":230,
-                "xaxis":dict(gridcolor=T["line"]),"yaxis":dict(gridcolor=T["line"])})
+                "xaxis":dict(gridcolor=T["line"],tickfont=dict(color=T["chalk2"],size=10)),
+                "yaxis":dict(gridcolor=T["line"],tickfont=dict(color=T["chalk2"],size=10))})
             fig.update_traces(marker_opacity=0.8)
             st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
             view_data_expander("URL Fingerprinting", dfw["bad_qs"].describe().reset_index(), "url_fp_data")
@@ -1528,7 +1587,8 @@ else:
             fig = px.histogram(dfw, x="it2", nbins=25, title="Core Combo: Script × XHR",
                                color_discrete_sequence=[T["amber"]])
             fig.update_layout(**{**PLOTLY_BASE,"height":230,
-                "xaxis":dict(gridcolor=T["line"]),"yaxis":dict(gridcolor=T["line"])})
+                "xaxis":dict(gridcolor=T["line"],tickfont=dict(color=T["chalk2"],size=10)),
+                "yaxis":dict(gridcolor=T["line"],tickfont=dict(color=T["chalk2"],size=10))})
             fig.update_traces(marker_opacity=0.8)
             st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
             view_data_expander("Script × XHR Combo", dfw["it2"].describe().reset_index(), "it2_data")
@@ -1558,10 +1618,9 @@ st.markdown(f"""
      padding:8px 0 16px;flex-wrap:wrap;gap:10px">
   <span style="font-family:'Fraunces',serif;font-size:15px;font-weight:300;color:{T['chalk2']}">
     Privacy<span style="color:{T['gold']}">Lens</span></span>
-  <span style="font-family:'DM Mono',monospace;font-size:10px;color:{T['chalk4']};letter-spacing:.04em">
+  <span style="font-family:'DM Mono',monospace;font-size:10px;color:{T['chalk3']};letter-spacing:.04em">
     WhoTracks.me · HTTP-level analysis · Does not include fingerprinting or app-level tracking</span>
 </div>""", unsafe_allow_html=True)
-
 
 
 
