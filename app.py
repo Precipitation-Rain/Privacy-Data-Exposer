@@ -1,11 +1,8 @@
-
 import warnings
-# Suppress only known harmless Streamlit/Plotly deprecation noise
 warnings.filterwarnings("ignore", category=FutureWarning, module="plotly")
 warnings.filterwarnings("ignore", message=".*ScriptRunContext.*")
 
 import os, io
-
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -16,9 +13,6 @@ import plotly.graph_objects as go
 import plotly.express       as px
 import requests
 
-# ─────────────────────────────────────────────────────────────────────────────
-# PAGE CONFIG  — must be FIRST st call
-# ─────────────────────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title            = "PrivacyLens · Privacy Intelligence",
     page_icon             = "🔍",
@@ -26,9 +20,6 @@ st.set_page_config(
     initial_sidebar_state = "expanded",
 )
 
-# ─────────────────────────────────────────────────────────────────────────────
-# SESSION STATE DEFAULTS
-# ─────────────────────────────────────────────────────────────────────────────
 for k, v in [
     ("page",            "Score Analyzer"),
     ("chat_msgs",       []),
@@ -36,14 +27,10 @@ for k, v in [
     ("chat_lang",       "English"),
     ("chat_input_val",  ""),
     ("last_groq_call",  0),
-    # data_source is set by init_data() — not listed here
 ]:
     if k not in st.session_state:
         st.session_state[k] = v
 
-# ─────────────────────────────────────────────────────────────────────────────
-# DESIGN TOKENS
-# ─────────────────────────────────────────────────────────────────────────────
 T = dict(
     ink0   = "#050608", ink1   = "#080a0e", ink2   = "#0c0f15",
     ink3   = "#11151d", ink4   = "#161c27", ink5   = "#1c2433",
@@ -81,9 +68,6 @@ PLOTLY_BASE = dict(
     title_font    = dict(color=T["chalk2"], size=11, family="'DM Mono', monospace"),
 )
 
-# ─────────────────────────────────────────────────────────────────────────────
-# GLOBAL CSS
-# ─────────────────────────────────────────────────────────────────────────────
 st.markdown(f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,200;0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,200;1,9..144,300;1,9..144,400&display=swap');
@@ -103,7 +87,23 @@ html, body, [class*="css"], .stApp {{
     radial-gradient(ellipse 40% 30% at 100% 100%, {T['gold']}06 0%, transparent 50%);
 }}
 
-[data-testid="stHeader"] {{ display: none !important; }}
+/* ── HEADER ── */
+[data-testid="stHeader"] {{
+  background: transparent !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}}
+
+[data-testid="stDecoration"]   {{ display: none !important; }}
+[data-testid="stMainMenu"]     {{ display: none !important; }}
+[data-testid="stStatusWidget"] {{ display: none !important; }}
+
+/* ── CRITICAL FIX: collapse button always visible, not just on hover ── */
+[data-testid="stSidebarCollapseButton"] {{
+  visibility: visible !important;
+  opacity: 1 !important;
+}}
+
 [data-testid="stBottom"] {{ display: none !important; }}
 
 .block-container {{
@@ -111,28 +111,12 @@ html, body, [class*="css"], .stApp {{
   max-width: 1600px !important;
 }}
 
-/* ── SIDEBAR — always expanded and visible ── */
+/* ── SIDEBAR ── only background and border, NO width/min-width ── */
 [data-testid="stSidebar"] {{
   background: {T['ink1']} !important;
   border-right: 1px solid {T['line']} !important;
-  min-width: 280px !important;
-  width: 280px !important;
-  transform: none !important;
-  visibility: visible !important;
-  opacity: 1 !important;
 }}
 [data-testid="stSidebar"] > div {{
-  background: {T['ink1']} !important;
-  min-width: 280px !important;
-}}
-[data-testid="stSidebar"][aria-expanded="false"] {{
-  min-width: 280px !important;
-  width: 280px !important;
-  transform: none !important;
-  margin-left: 0 !important;
-}}
-[data-testid="stSidebarCollapsedControl"] {{
-  display: flex !important;
   background: {T['ink1']} !important;
 }}
 [data-testid="stSidebarContent"] {{
@@ -376,26 +360,20 @@ hr {{ border-color: {T['line']} !important; margin: 1.2rem 0 !important; }}
 </style>
 """, unsafe_allow_html=True)
 
-# Force sidebar expanded
-st.markdown("""
+# ── JS FIX: force pointer-events on header so sidebar button always works ──
+st.components.v1.html("""
 <script>
-(function(){
-  function tryExpand(){
-    var sb = window.parent.document.querySelector('[data-testid="stSidebar"]');
-    if(!sb){ setTimeout(tryExpand,200); return; }
-    if(sb.getAttribute('aria-expanded')==='false'){
-      var btn = window.parent.document.querySelector('[data-testid="stSidebarCollapsedControl"] button');
-      if(btn) btn.click();
-    }
+(function() {
+  function fixHeader() {
+    var h = window.parent.document.querySelector('[data-testid="stHeader"]');
+    if (h) h.style.setProperty('pointer-events', 'auto', 'important');
   }
-  setTimeout(tryExpand, 400);
+  fixHeader();
+  setInterval(fixHeader, 300);
 })();
 </script>
-""", unsafe_allow_html=True)
+""", height=0)
 
-# ─────────────────────────────────────────────────────────────────────────────
-# HELPERS
-# ─────────────────────────────────────────────────────────────────────────────
 GROQ_MODEL   = os.getenv("GROQ_MODEL",   "llama3-70b-8192")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 
@@ -497,9 +475,6 @@ def score_badge(score, label, color):
            text-transform:uppercase">{label}</span>
     </div>"""
 
-# ─────────────────────────────────────────────────────────────────────────────
-# SCORING ENGINE
-# ─────────────────────────────────────────────────────────────────────────────
 W  = dict(sgeo=0.50, it2=0.30, referer_leaked=0.10,
           it1=0.05, it3=0.10, cookie_samesite_none=0.03,
           iframe=0.03, beacon=0.02)
@@ -526,13 +501,8 @@ def compute_scores(df):
     d["track_ratio"] = (d["requests_tracking"] / d["requests"].replace(0, np.nan)).fillna(0).clip(0,1)
     return d
 
-# ─────────────────────────────────────────────────────────────────────────────
-# DATA LOADER  — cache is the single source of truth; session_state stores only
-# a lightweight key (path string or upload hash), never the full DataFrame.
-# This means 20 concurrent users share ONE cached copy instead of 20 copies.
-# ─────────────────────────────────────────────────────────────────────────────
-AUTO_PATHS   = ["sites.csv","whotracks_2026/sites.csv","data/sites.csv"]
-MAX_UPLOAD_MB = 50  # hard cap on uploaded file size
+AUTO_PATHS    = ["sites.csv","whotracks_2026/sites.csv","data/sites.csv"]
+MAX_UPLOAD_MB = 50
 
 @st.cache_data(show_spinner="Loading dataset…")
 def load_path(p: str) -> pd.DataFrame:
@@ -540,11 +510,9 @@ def load_path(p: str) -> pd.DataFrame:
 
 @st.cache_data(show_spinner="Loading dataset…")
 def load_bytes_cached(data_hash: str, raw: bytes) -> pd.DataFrame:
-    """raw bytes are passed so cache can hash them; data_hash is the cache key."""
     return compute_scores(pd.read_csv(io.BytesIO(raw), index_col=0))
 
 def validate_csv(raw: bytes) -> tuple[bool, str]:
-    """Return (ok, error_message). Checks size, parsability, required columns."""
     mb = len(raw) / 1_048_576
     if mb > MAX_UPLOAD_MB:
         return False, f"File is {mb:.1f} MB — max allowed is {MAX_UPLOAD_MB} MB."
@@ -557,14 +525,10 @@ def validate_csv(raw: bytes) -> tuple[bool, str]:
     return True, ""
 
 def get_df() -> pd.DataFrame | None:
-    """Always fetch from cache using the stored key — never from session_state directly."""
     src = st.session_state.get("data_source")
-    if src is None:
-        return None
-    if src["type"] == "path":
-        return load_path(src["path"])
-    if src["type"] == "upload":
-        return load_bytes_cached(src["hash"], src["raw"])
+    if src is None: return None
+    if src["type"] == "path":   return load_path(src["path"])
+    if src["type"] == "upload": return load_bytes_cached(src["hash"], src["raw"])
     return None
 
 def init_data():
@@ -597,22 +561,16 @@ SIGNAL_LABELS = {
     "cookies":"Cookies","bad_qs":"URL Fingerprint","media":"Media","sgeo":"Core Signal"
 }
 
-# ─────────────────────────────────────────────────────────────────────────────
-# GROQ API  — with chat history capped at last 20 messages to avoid token
-# overflow, and a per-session cooldown to prevent request spam.
-# ─────────────────────────────────────────────────────────────────────────────
-CHAT_MAX_MSGS   = 20   # keep last N messages sent to API
-CHAT_COOLDOWN_S = 3    # minimum seconds between requests per session
+CHAT_MAX_MSGS   = 20
+CHAT_COOLDOWN_S = 3
 
 def call_groq(messages, system, api_key):
     if not api_key:
         return "⚠ No API key configured. Add GROQ_API_KEY to your .env file."
-    # Rate limiting: enforce cooldown between requests
     import time
     last = st.session_state.get("last_groq_call", 0)
     if time.time() - last < CHAT_COOLDOWN_S:
         return f"⚠ Please wait {CHAT_COOLDOWN_S} seconds between messages."
-    # Trim history to last CHAT_MAX_MSGS to stay within context window
     trimmed = messages[-CHAT_MAX_MSGS:]
     try:
         r = requests.post(
@@ -634,9 +592,7 @@ def call_groq(messages, system, api_key):
     except Exception as e:
         return f"⚠ Unexpected error: {type(e).__name__}"
 
-# ─────────────────────────────────────────────────────────────────────────────
-# SIDEBAR
-# ─────────────────────────────────────────────────────────────────────────────
+# ── SIDEBAR ──
 with st.sidebar:
     st.markdown(f"""
     <div style="padding:28px 0 8px">
@@ -656,7 +612,6 @@ with st.sidebar:
     </div>""", unsafe_allow_html=True)
 
     st.markdown('<div class="section-sep"></div>', unsafe_allow_html=True)
-
     st.markdown(f'<p class="sidebar-eyebrow">Navigation</p>', unsafe_allow_html=True)
     st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
 
@@ -720,9 +675,7 @@ with st.sidebar:
     else:
         st.caption("Add GROQ_API_KEY=... in .env or paste above")
 
-# ─────────────────────────────────────────────────────────────────────────────
-# GUARD — no data uploaded yet
-# ─────────────────────────────────────────────────────────────────────────────
+# ── GUARD ──
 df_raw = get_df()
 if df_raw is None:
     st.markdown(f"""
@@ -735,8 +688,7 @@ if df_raw is None:
         Privacy<span style="color:{T['gold']}">Lens</span></h1>
       <p style="font-size:14px;color:{T['chalk4']};max-width:420px;line-height:1.8;font-family:'DM Sans',sans-serif">
         Upload <code style="font-family:'DM Mono',monospace;color:{T['sky']};background:{T['ink3']};
-        padding:2px 8px;border-radius:3px">sites.csv</code> via the sidebar to start discovering
-        which websites track you, what they collect, and how safe your data really is.</p>
+        padding:2px 8px;border-radius:3px">sites.csv</code> via the sidebar to start.</p>
     </div>""", unsafe_allow_html=True)
     st.stop()
 
@@ -756,7 +708,6 @@ if st.session_state.page == "Score Analyzer":
         See exactly what each website tracks, how they do it, and what they do with your data</p>
     </div>""", unsafe_allow_html=True)
 
-    # ── Filters
     f1, f2, f3 = st.columns([1, 2.4, 0.8])
     categories = (["All Categories"] + sorted(df["category"].dropna().unique().tolist())
                   if "category" in df.columns else ["All Categories"])
@@ -804,12 +755,11 @@ if st.session_state.page == "Score Analyzer":
         st.session_state.last_site      = sel_site
         st.session_state.chat_input_val = ""
 
-    cat_val  = safe_get(row,"category","—") if has_col(row,"category") else "—"
-    pop_val  = safe_get(row,"popularity",0.0)
-    pop_str  = f"{pop_val:.5f}" if pop_val > 0 else "—"
+    cat_val    = safe_get(row,"category","—") if has_col(row,"category") else "—"
+    pop_val    = safe_get(row,"popularity",0.0)
+    pop_str    = f"{pop_val:.5f}" if pop_val > 0 else "—"
     percentile = int((df["privacy_score"] < score).mean() * 100)
 
-    # ── Hero card
     st.markdown(f"""
     <div style="padding:24px 28px;background:{T['ink2']};border:1px solid {T['line']};
          border-top:3px solid {color};border-radius:10px;margin:0 0 20px;
@@ -896,9 +846,7 @@ if st.session_state.page == "Score Analyzer":
         tab_what, tab_how, tab_why, tab_xai = st.tabs([
             "WHAT THEY COLLECT","HOW THEY DO IT","WHY THEY DO IT","SCORE BREAKDOWN"])
 
-        # ── WHAT THEY COLLECT
         with tab_what:
-            # FIXED: chalk4 → chalk2, font-size 12px → 13px
             st.markdown(f"""<p style="color:{T['chalk2']};font-size:13px;margin:14px 0 16px;
             font-family:'DM Sans',sans-serif;line-height:1.7">
             Data <b style="color:{T['chalk']}">{sel_site}</b> likely collects from visitors.</p>""",
@@ -920,7 +868,6 @@ if st.session_state.page == "Score Analyzer":
                 items.append(("07","Media Consumption",f"What you watch and for how long. Active on {safe_get(row,'media',0.0):.0%} of visits.",T["sky"]))
             if safe_get(row,"bad_qs",0.0)>0.05:
                 items.append(("08","URL Fingerprinting",f"Unique query codes identify you cookieless. Used on {safe_get(row,'bad_qs',0.0):.0%} of visits.",T["sky"]))
-
             if not items:
                 st.success(f"✓  {sel_site} shows minimal data collection.")
             else:
@@ -941,9 +888,7 @@ if st.session_state.page == "Score Analyzer":
                       </div></div>"""
                 st.markdown(html, unsafe_allow_html=True)
 
-        # ── HOW THEY DO IT
         with tab_how:
-            # FIXED: chalk4 → chalk2, font-size 12px → 13px
             st.markdown(f"""<p style="color:{T['chalk2']};font-size:13px;margin:14px 0 4px;
             font-family:'DM Sans',sans-serif">Technical methods — bar shows deployment frequency.</p>""",
             unsafe_allow_html=True)
@@ -964,9 +909,7 @@ if st.session_state.page == "Score Analyzer":
                 html += signal_bar(lbl, safe_get(row,ck), expl)
             st.markdown(html, unsafe_allow_html=True)
 
-        # ── WHY THEY DO IT
         with tab_why:
-            # FIXED: chalk4 → chalk2, font-size 12px → 13px
             st.markdown(f"""<p style="color:{T['chalk2']};font-size:13px;margin:14px 0 16px;
             font-family:'DM Sans',sans-serif">What this data is used for — no euphemisms.</p>""",
             unsafe_allow_html=True)
@@ -1000,9 +943,7 @@ if st.session_state.page == "Score Analyzer":
                 </div>"""
             st.markdown(html, unsafe_allow_html=True)
 
-        # ── SCORE BREAKDOWN
         with tab_xai:
-            # FIXED: chalk4 → chalk2, font-size 12px → 13px
             st.markdown(f"""<p style="color:{T['chalk2']};font-size:13px;margin:14px 0 10px;
             font-family:'DM Sans',sans-serif">
             Signal contributions to final score of
@@ -1034,7 +975,6 @@ if st.session_state.page == "Score Analyzer":
 
             eyebrow("Detailed Breakdown")
             st.markdown("<div style='height:6px'></div>", unsafe_allow_html=True)
-            # FIXED: table header chalk5 → chalk3, size 8.5px → 9.5px; row signal name chalk3 → chalk2, size 11.5px → 12.5px
             html = f"""<div style="background:{T['ink2']};border:1px solid {T['line']};
               border-radius:6px;overflow:hidden;font-family:'DM Mono',monospace">
               <div style="display:grid;grid-template-columns:2fr .6fr .6fr .6fr;padding:10px 16px;
@@ -1059,45 +999,34 @@ if st.session_state.page == "Score Analyzer":
             </div></div>"""
             st.markdown(html, unsafe_allow_html=True)
 
-    # ── Protective Measures
     if score > 30:
         sep()
         st.markdown(f'<div class="pl-section">', unsafe_allow_html=True)
         card_section("🛡️","Protective Measures","Tools to reduce your exposure on this site")
         tips = []; tc = st.columns(3)
         if safe_get(row,"script")>0.5:
-            tips.append(("uBlock Origin","Blocks tracking scripts before they execute. The single most effective free privacy tool.",
-                         "https://ublockorigin.com",T["lime"]))
+            tips.append(("uBlock Origin","Blocks tracking scripts before they execute. The single most effective free privacy tool.","https://ublockorigin.com",T["lime"]))
         if safe_get(row,"cookie_samesite_none")>0.2:
-            tips.append(("Firefox + TCP","Total Cookie Protection isolates cookies per site — stops cross-site tracking completely.",
-                         "https://www.mozilla.org/firefox",T["sky"]))
+            tips.append(("Firefox + TCP","Total Cookie Protection isolates cookies per site — stops cross-site tracking completely.","https://www.mozilla.org/firefox",T["sky"]))
         if safe_get(row,"iframe")>0.3:
-            tips.append(("Privacy Badger","Learns and blocks invisible trackers automatically as you browse.",
-                         "https://privacybadger.org",T["amber"]))
+            tips.append(("Privacy Badger","Learns and blocks invisible trackers automatically as you browse.","https://privacybadger.org",T["amber"]))
         if safe_get(row,"referer_leaked")>0.2:
-            tips.append(("Brave Browser","Strips referrer headers and blocks fingerprinting by default.",
-                         "https://brave.com",T["gold"]))
+            tips.append(("Brave Browser","Strips referrer headers and blocks fingerprinting by default.","https://brave.com",T["gold"]))
         if safe_get(row,"beacon")>0.1:
-            tips.append(("uBlock Strict Mode","Intercepts beacon and ping requests at the network level.",
-                         "https://ublockorigin.com",T["red"]))
+            tips.append(("uBlock Strict Mode","Intercepts beacon and ping requests at the network level.","https://ublockorigin.com",T["red"]))
         if not tips:
-            tips.append(("Privacy Browser","Start with Brave or Firefox Enhanced Tracking Protection.",
-                         "https://brave.com",T["sky"]))
+            tips.append(("Privacy Browser","Start with Brave or Firefox Enhanced Tracking Protection.","https://brave.com",T["sky"]))
         for i,(tool,desc,url,tcol) in enumerate(tips[:3]):
             with tc[i%3]:
                 st.markdown(f"""<a href="{url}" target="_blank" style="text-decoration:none;display:block">
                 <div style="padding:16px;background:{T['ink3']};border:1px solid {T['line']};
                      border-top:2px solid {tcol};border-radius:6px">
-                  <div style="font-size:14px;font-weight:600;color:{T['chalk']};
-                       font-family:'DM Sans',sans-serif;margin-bottom:6px">{tool}</div>
-                  <div style="font-size:12px;color:{T['chalk2']};font-family:'DM Sans',sans-serif;
-                       line-height:1.6;margin-bottom:12px">{desc}</div>
-                  <div style="font-family:'DM Mono',monospace;font-size:9px;color:{tcol};
-                       letter-spacing:.12em;text-transform:uppercase">Visit →</div>
+                  <div style="font-size:14px;font-weight:600;color:{T['chalk']};font-family:'DM Sans',sans-serif;margin-bottom:6px">{tool}</div>
+                  <div style="font-size:12px;color:{T['chalk2']};font-family:'DM Sans',sans-serif;line-height:1.6;margin-bottom:12px">{desc}</div>
+                  <div style="font-family:'DM Mono',monospace;font-size:9px;color:{tcol};letter-spacing:.12em;text-transform:uppercase">Visit →</div>
                 </div></a>""", unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # ── Raw data
     sep()
     st.markdown(f'<div class="pl-section">', unsafe_allow_html=True)
     card_section("🔬","Raw Signal Values","Underlying data powering this analysis")
@@ -1110,7 +1039,6 @@ if st.session_state.page == "Score Analyzer":
         else:   st.caption("No raw data available.")
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # ── AI Privacy Assistant
     sep()
     st.markdown(f'<div class="pl-section">', unsafe_allow_html=True)
     card_section("🤖","AI Privacy Assistant",f"Ask anything about {sel_site} or how this app works")
@@ -1132,12 +1060,6 @@ Scripts:{safe_get(row,'script'):.1%} XHR:{safe_get(row,'xhr'):.1%} CoreSig:{safe
 CrossCook:{safe_get(row,'cookie_samesite_none'):.1%} Iframes:{safe_get(row,'iframe'):.1%}
 Referrer:{safe_get(row,'referer_leaked'):.1%} Beacons:{safe_get(row,'beacon'):.1%}
 Pixels:{safe_get(row,'image'):.1%} Trackers:{safe_get(row,'trackers',0.0):.1f} Companies:{safe_get(row,'companies',0.0):.1f}
-
-You also answer general questions about: the PrivacyLens app, how scores are calculated,
-what each signal means (XHR, beacons, cookies, iframes, referrer, fingerprinting),
-the WhoTracks.me dataset, the Analytics Dashboard charts (histograms, scatter plots,
-heatmaps, radar charts, box plots, rankings), and how to protect privacy online.
-
 Reply in {chosen_lang}. Be concise. Use bullets for lists. Plain language only."""
 
     if not api_key:
@@ -1149,7 +1071,6 @@ Reply in {chosen_lang}. Be concise. Use bullets for lists. Plain language only."
             to enable the AI assistant.
           </div></div>""", unsafe_allow_html=True)
     else:
-        # FIX 2: quick prompts only shown when no chat yet — hidden once conversation starts
         if not st.session_state.chat_msgs:
             eyebrow("Quick Prompts")
             st.markdown("<div style='height:6px'></div>", unsafe_allow_html=True)
@@ -1170,18 +1091,8 @@ Reply in {chosen_lang}. Be concise. Use bullets for lists. Plain language only."
             with st.chat_message(msg["role"], avatar="🧑" if msg["role"]=="user" else "🔍"):
                 st.markdown(msg["content"])
 
-        # FIX 3: counter-based key forces Streamlit to remount the text_input
-        # clean after every sent message — no manual clearing needed
         if "chat_input_counter" not in st.session_state:
             st.session_state.chat_input_counter = 0
-
-        # FIX 1: align Send button with input using CSS flex on a wrapper div
-        st.markdown(f"""
-        <style>
-        div[data-testid="stHorizontalBlock"]:has(> div > div[data-testid="stTextInput"]) {{
-            align-items: flex-end !important;
-        }}
-        </style>""", unsafe_allow_html=True)
 
         st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
         input_col, btn_col = st.columns([5,1])
@@ -1201,7 +1112,6 @@ Reply in {chosen_lang}. Be concise. Use bullets for lists. Plain language only."
             with st.spinner("Analysing…"):
                 reply = call_groq(st.session_state.chat_msgs, system_prompt, api_key)
             st.session_state.chat_msgs.append({"role":"assistant","content":reply})
-            # increment counter → new key → input widget remounts empty
             st.session_state.chat_input_counter += 1
             st.rerun()
 
@@ -1214,19 +1124,18 @@ Reply in {chosen_lang}. Be concise. Use bullets for lists. Plain language only."
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # ── FAQ
     sep()
     st.markdown(f'<div class="pl-section">', unsafe_allow_html=True)
     card_section("❓","Privacy FAQ","Everything you need to know about web tracking")
     faqs = [
         ("🔐  Why is online privacy needed?", T["sky"],
-         "Every website you visit builds a profile — your interests, income bracket, health concerns, political views, and daily routines. This data is bought and sold without your direct consent. Privacy isn't about hiding something; it's about controlling your own narrative."),
+         "Every website you visit builds a profile — your interests, income bracket, health concerns, political views, and daily routines. This data is bought and sold without your direct consent."),
         ("⚠️  Why should you be aware of tracking?", T["amber"],
-         "Most tracking is invisible. A single webpage can fire 50+ hidden requests to third-party companies before you read the first paragraph. These aren't just ad companies — they include data brokers who sell your profile to insurers, employers, and governments."),
+         "Most tracking is invisible. A single webpage can fire 50+ hidden requests to third-party companies before you read the first paragraph."),
         ("📱  How does tracking impact your daily life?", T["red"],
-         "Tracking shapes what you pay (dynamic pricing), what you see (filter bubbles), what you buy (dark patterns), and your access to services (insurance risk scoring). Studies show tracked users pay higher prices for flights, hotels, and loans."),
+         "Tracking shapes what you pay (dynamic pricing), what you see (filter bubbles), what you buy (dark patterns), and your access to services."),
         ("🛡️  How to protect yourself from tracking?", T["lime"],
-         "Use Firefox or Brave with uBlock Origin. Enable DNS-over-HTTPS. Use container tabs. Search with DuckDuckGo. On mobile, disable ad tracking in OS settings. Review app permissions. Use PrivacyLens to audit websites before trusting them with your data."),
+         "Use Firefox or Brave with uBlock Origin. Enable DNS-over-HTTPS. Search with DuckDuckGo. Review app permissions regularly."),
     ]
     for title,accent,body in faqs:
         with st.expander(title):
@@ -1485,8 +1394,7 @@ else:
             fig.update_traces(marker_opacity=0.8)
             st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
             view_data_expander("Trackers per Site",
-                dfw["trackers"].describe().reset_index().rename(columns={"index":"Stat","trackers":"Value"}),
-                "trackers_hist")
+                dfw["trackers"].describe().reset_index().rename(columns={"index":"Stat","trackers":"Value"}), "trackers_hist")
     with re2:
         if "companies" in dfw.columns:
             fig = px.histogram(dfw, x="companies", nbins=30, title="Companies per Site",
@@ -1496,8 +1404,7 @@ else:
             fig.update_traces(marker_opacity=0.8)
             st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
             view_data_expander("Companies per Site",
-                dfw["companies"].describe().reset_index().rename(columns={"index":"Stat","companies":"Value"}),
-                "companies_hist")
+                dfw["companies"].describe().reset_index().rename(columns={"index":"Stat","companies":"Value"}), "companies_hist")
     with re3:
         if "category" in dfw.columns and "trackers" in dfw.columns:
             ct  = dfw.groupby("category")["trackers"].mean().sort_values(ascending=False)
@@ -1645,9 +1552,6 @@ else:
                  use_container_width=True, height=400)
     st.caption(f"Showing 200 of {len(ft):,} matching records")
 
-# ─────────────────────────────────────────────────────────────────────────────
-# FOOTER
-# ─────────────────────────────────────────────────────────────────────────────
 sep()
 st.markdown(f"""
 <div style="display:flex;align-items:center;justify-content:space-between;
@@ -1657,3 +1561,9 @@ st.markdown(f"""
   <span style="font-family:'DM Mono',monospace;font-size:10px;color:{T['chalk4']};letter-spacing:.04em">
     WhoTracks.me · HTTP-level analysis · Does not include fingerprinting or app-level tracking</span>
 </div>""", unsafe_allow_html=True)
+
+
+
+
+
+
